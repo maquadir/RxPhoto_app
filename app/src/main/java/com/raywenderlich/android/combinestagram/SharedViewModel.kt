@@ -40,6 +40,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.subjects.BehaviorSubject
@@ -89,8 +90,8 @@ class SharedViewModel : ViewModel() {
             .addTo(disposables)
     }
 
-    fun saveBitmapFromImageView(imageView: ImageView, context: Context): Observable<String> {
-        return Observable.create { emitter ->
+    fun saveBitmapFromImageView(imageView: ImageView, context: Context): Single<String> {
+        return Single.create { emitter ->
 
             val tmpImg = "${System.currentTimeMillis()}.png"
 
@@ -109,8 +110,7 @@ class SharedViewModel : ViewModel() {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, os)
                 os.flush()
                 os.close()
-                emitter.onNext(tmpImg)
-                emitter.onComplete()
+                emitter.onSuccess(tmpImg)
             } catch (e: IOException) {
                 Log.e("MainActivity", "Problem saving collage", e)
                 emitter.onError(e)

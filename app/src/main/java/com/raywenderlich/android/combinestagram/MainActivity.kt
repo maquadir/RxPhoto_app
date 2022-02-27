@@ -38,7 +38,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.raywenderlich.android.combinestagram.databinding.ActivityMainBinding
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 
 class MainActivity : AppCompatActivity() {
@@ -116,8 +118,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun actionSave() {
         viewModel.saveBitmapFromImageView(bind.collageImage, this)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onNext = { file ->
+                onSuccess = { file ->
                     Toast.makeText(
                         this, "$file saved",
                         Toast.LENGTH_SHORT
